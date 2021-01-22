@@ -28,13 +28,19 @@ class RecAdapter(private val values: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.largeTextView?.let { MainActivity().parse(it) }
+        holder.image1?.let { MainActivity().parse(it, position) }
+        holder.image2?.let { MainActivity().parse(it, position + 1) }
+        holder.image3?.let { MainActivity().parse(it, position + 2) }
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var largeTextView: ImageView? = null
+        var image1: ImageView? = null
+        var image2: ImageView? = null
+        var image3: ImageView? = null
         init {
-            largeTextView = itemView?.findViewById(R.id.image)
+            image1 = itemView?.findViewById(R.id.image)
+            image2 = itemView?.findViewById(R.id.image1)
+            image3 = itemView?.findViewById(R.id.image2)
         }
     }
 }

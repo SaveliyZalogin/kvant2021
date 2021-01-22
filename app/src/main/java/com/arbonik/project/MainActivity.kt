@@ -15,10 +15,11 @@ import org.jsoup.nodes.Document
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var list = arrayListOf<String>()
+        val list = arrayListOf<String>()
         list.add("asdasdasd")
         list.add("asdasdasds")
         list.add("asdasdasdd")
@@ -28,12 +29,13 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.adapter = RecAdapter(list)
     }
-    fun parse(image: ImageView) {
+    fun parse(image: ImageView, pos: Int) {
         Thread(Runnable {
             val stringBuilder = StringBuilder()
             try {
                 val doc: Document = Jsoup.connect("https://joborgame.ru/game-lol").get()
-                val src: String = doc.select("img.item-ico").attr("src")
+                val src: String = doc.select("img.item-ico").get(pos).attr("src")
+//                var secondEl = src.get(3)
                 stringBuilder.append(src)
                 Log.d("privet", stringBuilder.toString())
             } catch (e: IOException) {
