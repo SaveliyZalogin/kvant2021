@@ -28,17 +28,7 @@ class RecAdapter(private val values: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        Thread(Runnable {
-            val stringBuilder = StringBuilder()
-            try {
-                val doc: Document = Jsoup.connect("https://joborgame.ru/game-lol").get()
-                val src: String = doc.select("img.item-ico").attr("src")
-                stringBuilder.append(src)
-            } catch (e: IOException) {
-                stringBuilder.append("Error : ").append(e.message).append("\n")
-            }
-            runOnUiThread { Picasso.get().load(stringBuilder.toString()).into(holder.largeTextView) }
-        }).start()
+        holder.largeTextView?.let { MainActivity().parse(it) }
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

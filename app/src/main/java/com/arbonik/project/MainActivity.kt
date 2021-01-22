@@ -3,6 +3,7 @@ package com.arbonik.project
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.Log
 import android.view.View
 import android.widget.Adapter
 import android.widget.ImageView
@@ -19,9 +20,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         var list = arrayListOf<String>()
         list.add("asdasdasd")
+        list.add("asdasdasds")
+        list.add("asdasdasdd")
+        list.add("asdasdasdf")
+        list.add("asdasdasdg")
+        list.add("asdasdasdj")
+
         recyclerView.adapter = RecAdapter(list)
     }
-    fun parse(view: View){
-
+    fun parse(image: ImageView) {
+        Thread(Runnable {
+            val stringBuilder = StringBuilder()
+            try {
+                val doc: Document = Jsoup.connect("https://joborgame.ru/game-lol").get()
+                val src: String = doc.select("img.item-ico").attr("src")
+                stringBuilder.append(src)
+                Log.d("privet", stringBuilder.toString())
+            } catch (e: IOException) {
+                stringBuilder.append("Error : ").append(e.message).append("\n")
+            }
+            runOnUiThread { Picasso.get().load(stringBuilder.toString()).into(image) }
+        }).start()
     }
 }
