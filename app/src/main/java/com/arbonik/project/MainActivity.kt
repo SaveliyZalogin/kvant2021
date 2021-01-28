@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         Thread(Runnable {
             val stringBuilder = StringBuilder()
             try {
-                val doc: Document = Jsoup.connect("https://joborgame.ru/game-lol").get()
-                val src: String = doc.select("img.item-ico").get(pos).attr("src")
+                val doc: Document = Jsoup.connect("https://www.meme-arsenal.com/create/chose?type=picture&sort=latest").userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)").get()
+                val src: String = doc.select("img.mat-card-image.ng-star-inserted").get(pos).attr("src")
 //                var secondEl = src.get(3)
                 stringBuilder.append(src)
                 Log.d("privet", stringBuilder.toString())

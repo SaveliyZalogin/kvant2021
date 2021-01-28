@@ -13,4 +13,10 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="items">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:scaleX">2</item>
+        <item name="android:scaleY">2</item>
+    </style>
 </resources>
