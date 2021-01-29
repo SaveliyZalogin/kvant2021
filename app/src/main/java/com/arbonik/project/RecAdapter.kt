@@ -17,10 +17,8 @@ import java.net.HttpCookie.parse
 import java.net.URI
 import java.util.logging.Level.parse
 
-class RecAdapter(private val values: ArrayList<String>) :
+class RecAdapter() :
     RecyclerView.Adapter<RecAdapter.MyViewHolder>() {
-
-    override fun getItemCount() = values.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.recyclerview_item, parent, false)
@@ -28,19 +26,26 @@ class RecAdapter(private val values: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.image1?.let { MainActivity().parse(it, position) }
-        holder.image2?.let { MainActivity().parse(it, position + 1) }
-        holder.image3?.let { MainActivity().parse(it, position + 2) }
+        if (holder.image1?.isEnabled!!) {
+            holder.image1?.let { MainActivity().parse(it, position) }
+            holder.image1?.isEnabled = false
+        }
+        if (holder.image2?.isEnabled!!) {
+            holder.image2?.let { MainActivity().parse(it, position + 1) }
+            holder.image2?.isEnabled = false
+        }
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var image1: ImageView? = null
         var image2: ImageView? = null
-        var image3: ImageView? = null
         init {
             image1 = itemView?.findViewById(R.id.image)
-            image2 = itemView?.findViewById(R.id.image1)
-            image3 = itemView?.findViewById(R.id.image2)
+            image2 = itemView?.findViewById(R.id.image2)
         }
+    }
+
+    override fun getItemCount(): Int {
+        return 10
     }
 }

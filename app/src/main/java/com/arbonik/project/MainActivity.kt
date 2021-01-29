@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.util.Log
 import android.view.View
+import android.view.View.GONE
 import android.widget.Adapter
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
@@ -19,21 +20,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val list = arrayListOf<String>()
-        list.add("asdasdasd")
-        list.add("asdasdasds")
-        list.add("asdasdasdd")
-        list.add("asdasdasdf")
-        list.add("asdasdasdg")
-        list.add("asdasdasdj")
 
-        recyclerView.adapter = RecAdapter(list)
+        recyclerView.adapter = RecAdapter()
     }
     fun parse(image: ImageView, pos: Int) {
+        val imageview: ImageView
+
         Thread(Runnable {
             val stringBuilder = StringBuilder()
+            val doc: Document = Jsoup.connect("https://www.meme-arsenal.com/create/chose?type=picture&sort=latest").userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)").get()
             try {
-                val doc: Document = Jsoup.connect("https://www.meme-arsenal.com/create/chose?type=picture&sort=latest").userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)").get()
                 val src: String = doc.select("img.mat-card-image.ng-star-inserted").get(pos).attr("src")
 //                var secondEl = src.get(3)
                 stringBuilder.append(src)
