@@ -29,7 +29,7 @@
                 app:cardCornerRadius="10dp">
                 <ImageView
                     android:id="@+id/image"
-                    android:background="@drawable/meme_back"
+                    android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
@@ -52,7 +52,7 @@
                 app:cardCornerRadius="10dp">
                 <ImageView
                     android:id="@+id/image2"
-                    android:background="@drawable/meme_back"
+                    android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
