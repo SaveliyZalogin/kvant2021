@@ -1,72 +1,59 @@
 package com.arbonik.project
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 
-class RecAdapter(width: Double, height: Double, search_query: String?) :
+class RecAdapter(context: Context, width: Double, height: Double, elems: Int, urls: ArrayList<String>) :
     RecyclerView.Adapter<RecAdapter.MyViewHolder>() {
     var width = width
     var height = height
-    var counter = 0
-    var topSetted = false
-    var search_query = search_query
+    var context = context
+    var urls = urls
+    var elems = elems
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : MyViewHolder {
-        if (topSetted) {
-            val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.recyclerview_item, parent, false)
-            return MyViewHolder(itemView, topSetted)
-        } else {
-            val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.top_recycle_layout, parent, false)
-            return MyViewHolder(itemView, topSetted)
-        }
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item, parent, false)
+        return MyViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if (topSetted) {
-            if (holder.image1?.isEnabled!!) {
-                holder.image_left?.layoutParams?.width = width.toInt()
-                holder.image_left?.layoutParams?.height = height.toInt()
-                holder.image1?.let { MainActivity().parse(it, position + counter, search_query) }
-                holder.card_left?.visibility = VISIBLE
-                holder.image1?.isEnabled = false
-                counter++
+        val url = urls.get(position + elems)
+        holder.image_left?.layoutParams?.width = width.toInt()
+        holder.image_left?.layoutParams?.height = height.toInt()
+        holder.image1?.let { MainActivity().parse(it, url) }
+        holder.card_left?.visibility = VISIBLE
+        holder.itemView.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val intent = Intent(context, MemeActivity::class.java)
+                intent.putExtra("url", url)
+                context.startActivity(intent)
             }
-            if (holder.image2?.isEnabled!!) {
-                holder.image_right?.layoutParams?.width = width.toInt()
-                holder.image_right?.layoutParams?.height = height.toInt()
-                holder.image2?.let { MainActivity().parse(it, position + counter, search_query) }
-                holder.image2?.isEnabled = false
-            }
-        } else {
-            topSetted = true
-        }
+        })
+        holder.image1?.isEnabled = false
     }
 
-    class MyViewHolder(itemView: View, topSetted: Boolean) : RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var image1: ImageView? = null
-        var image2: ImageView? = null
-        var image_right: LinearLayout? = null
         var image_left: LinearLayout? = null
         var card_left: CardView? = null
-        var card_right: CardView? = null
         init {
-            if (topSetted) {
-                image1 = itemView?.findViewById(R.id.image)
-                image2 = itemView?.findViewById(R.id.image2)
-                image_right = itemView?.findViewById(R.id.image_right)
-                image_left = itemView?.findViewById(R.id.image_left)
-                card_left = itemView?.findViewById(R.id.card_left)
-                card_right = itemView?.findViewById(R.id.card_right)
-            }
+            image1 = itemView.findViewById(R.id.image)
+            image_left = itemView.findViewById(R.id.image_left)
+            card_left = itemView.findViewById(R.id.card_left)
         }
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return 30
     }
 }
