@@ -2,6 +2,7 @@ package com.arbonik.project
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -14,20 +15,20 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 
-class RecAdapter(context: Context, width: Double, height: Double, elems: Int, urls: ArrayList<String>) :
+class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayList<Meme>) :
     RecyclerView.Adapter<RecAdapter.MyViewHolder>() {
     var width = width
     var height = height
     var context = context
     var urls = urls
-    var elems = elems
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item, parent, false)
         return MyViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val url = urls.get(position + elems)
+        val url = urls.get(position).url
+        Log.d("pos", position.toString())
         holder.image_left?.layoutParams?.width = width.toInt()
         holder.image_left?.layoutParams?.height = height.toInt()
         holder.image1?.let { MainActivity().parse(it, url) }
@@ -39,7 +40,6 @@ class RecAdapter(context: Context, width: Double, height: Double, elems: Int, ur
                 context.startActivity(intent)
             }
         })
-        holder.image1?.isEnabled = false
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -54,6 +54,6 @@ class RecAdapter(context: Context, width: Double, height: Double, elems: Int, ur
     }
 
     override fun getItemCount(): Int {
-        return 30
+        return urls.size
     }
 }

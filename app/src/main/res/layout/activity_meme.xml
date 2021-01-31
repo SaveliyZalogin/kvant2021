@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MemeActivity"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -23,10 +24,22 @@
         android:id="@+id/meme_image"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="save"/>
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="save"/>
+        <ImageButton
+            android:id="@+id/izbrannoe_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@mipmap/ic_star_outline"/>
+    </LinearLayout>
 
 </LinearLayout>

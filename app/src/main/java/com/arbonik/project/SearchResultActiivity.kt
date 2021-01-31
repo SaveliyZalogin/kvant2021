@@ -22,7 +22,7 @@ class SearchResultActiivity : AppCompatActivity() {
     var search_query: String = ""
     var width: Int = 0
     var height: Int = 0
-    val memes: ArrayList<String> = ArrayList()
+    val memes: ArrayList<Meme> = ArrayList()
     var elems: Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,25 +37,39 @@ class SearchResultActiivity : AppCompatActivity() {
         width = size.x
         height = size.y
 
-
         search_query = intent.getStringExtra("search_query").toString()
         supportActionBar!!.title = "Результат поиска: $search_query"
+        load_data(elems)
+
+        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    elems += 1
+                    load_data(elems)
+                }
+            }
+        })
+    }
+    fun load_data(elems: Int) {
         val apiService = MemeApiService.create()
         val context = this
-        val results = apiService.search_with_query(1, 30, search_query, "popular", "all", "ru")
+        val results = apiService.search_with_query(elems, 30, search_query, "popular", "all", "ru")
         results.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
                 for (meme in response!!.body().memes) {
                     Log.d("mypopa", meme.url!!)
-                    memes.add(meme.url)
+                    memes.add(meme)
                 }
-                recycler_view.adapter = RecAdapter(context, width / 2.2, width / 2.2, elems,  memes)
+                if (recycler_view.adapter != null) {
+                    recycler_view.adapter!!.notifyDataSetChanged()
+                } else {
+                    recycler_view.adapter = RecAdapter(context, width / 2.2, width / 2.2, memes)
+                }
             }
             override fun onFailure(call: Call<Data>?, t: Throwable?) {
                 t!!.printStackTrace()
             }
         })
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

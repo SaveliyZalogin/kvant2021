@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,8 +29,9 @@ class MainActivity : AppCompatActivity() {
     var search_query: String = ""
     var width: Int = 0
     var height: Int = 0
-    val memes: ArrayList<String> = ArrayList()
+    val memes: ArrayList<Meme> = ArrayList()
     var counter: Int = 1
+    var elems: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,16 @@ class MainActivity : AppCompatActivity() {
         width = size.x
         height = size.y
 
-        load_data(0)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    elems += 1
+                    load_data(elems)
+                }
+            }
+        })
+
+        load_data(elems)
 
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -73,15 +84,20 @@ class MainActivity : AppCompatActivity() {
     }
     fun load_data(elems: Int) {
         val apiService = MemeApiService.create()
-        val results = apiService.search(1, 30, "popular", "all", "ru")
+        val results = apiService.search(elems, 30, "popular", "all", "ru")
         val context = this
         results.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
                 for (meme in response!!.body().memes) {
                     Log.d("mypopa", meme.url!!)
-                    memes.add(meme.url)
+                    memes.add(meme)
+
                 }
-                recyclerView.adapter = RecAdapter(context, width / 2.2, width / 2.2, elems, memes)
+                if (recyclerView.adapter != null) {
+                    recyclerView.adapter!!.notifyDataSetChanged()
+                } else {
+                    recyclerView.adapter = RecAdapter(context, width / 2.2, width / 2.2, memes)
+                }
             }
             override fun onFailure(call: Call<Data>?, t: Throwable?) {
                 t!!.printStackTrace()
