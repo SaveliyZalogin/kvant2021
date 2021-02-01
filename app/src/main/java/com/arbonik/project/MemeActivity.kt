@@ -19,6 +19,7 @@ import java.net.URL
 
 
 class MemeActivity : AppCompatActivity() {
+    var memes: List<Meme>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meme)
@@ -37,9 +38,19 @@ class MemeActivity : AppCompatActivity() {
                 }
 
             }
-
         })
-
+        izbrannoe_button.setOnClickListener(object : View.OnClickListener {
+            var isClicked = false
+            override fun onClick(v: View?) {
+                if (!isClicked) {
+                    izbrannoe_button.setImageResource(R.mipmap.ic_star)
+                    isClicked = true
+                } else {
+                    izbrannoe_button.setImageResource(R.mipmap.ic_star_outline)
+                    isClicked = false
+                }
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
