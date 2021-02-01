@@ -32,7 +32,7 @@ internal object JSONHelper {
         }
     }
 
-    fun importFromJSONTasks(context: Context): List<Meme?>? {
+    fun importFromJSON(context: Context): List<Meme?>? {
         var streamReader: InputStreamReader? = null
         var fileInputStream: FileInputStream? = null
         try {

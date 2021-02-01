@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
+import java.io.Serializable
 
 class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayList<Meme>) :
     RecyclerView.Adapter<RecAdapter.MyViewHolder>() {
@@ -27,7 +28,8 @@ class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayLis
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val url = urls.get(position).url
+        val meme = urls.get(position)
+        val url = meme.url
         Log.d("pos", position.toString())
         holder.image_left?.layoutParams?.width = width.toInt()
         holder.image_left?.layoutParams?.height = height.toInt()
@@ -36,7 +38,10 @@ class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayLis
         holder.itemView.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 val intent = Intent(context, MemeActivity::class.java)
-                intent.putExtra("url", url)
+                intent.putExtra("id", meme.id)
+                intent.putExtra("title", meme.title)
+                intent.putExtra("description", meme.description)
+                intent.putExtra("url", meme.url)
                 context.startActivity(intent)
             }
         })
@@ -57,3 +62,4 @@ class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayLis
         return urls.size
     }
 }
+

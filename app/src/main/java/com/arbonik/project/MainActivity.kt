@@ -45,17 +45,6 @@ class MainActivity : AppCompatActivity() {
         width = size.x
         height = size.y
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (!recyclerView.canScrollVertically(1)) {
-                    elems += 1
-                    load_data(elems)
-                }
-            }
-        })
-
-        load_data(elems)
-
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -68,6 +57,10 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("search_query", search_query)
             startActivity(intent)
         }
+        val mainFragment: MainFragment
+        mainFragment = MainFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
+        mainFragment.width = width
     }
     fun parse(image: ImageView, url: String?) {
         runOnUiThread { Picasso.get().load(url).into(image) }
@@ -81,28 +74,6 @@ class MainActivity : AppCompatActivity() {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.setIconifiedByDefault(true)
         return true
-    }
-    fun load_data(elems: Int) {
-        val apiService = MemeApiService.create()
-        val results = apiService.search(elems, 30, "popular", "all", "ru")
-        val context = this
-        results.enqueue(object : Callback<Data> {
-            override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
-                for (meme in response!!.body().memes) {
-                    Log.d("mypopa", meme.url!!)
-                    memes.add(meme)
-
-                }
-                if (recyclerView.adapter != null) {
-                    recyclerView.adapter!!.notifyDataSetChanged()
-                } else {
-                    recyclerView.adapter = RecAdapter(context, width / 2.2, width / 2.2, memes)
-                }
-            }
-            override fun onFailure(call: Call<Data>?, t: Throwable?) {
-                t!!.printStackTrace()
-            }
-        })
     }
 }
 interface MemeApiService {
