@@ -6,14 +6,19 @@ import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.navigation.NavigationView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -25,13 +30,16 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     var search_query: String = ""
     var width: Int = 0
     var height: Int = 0
     val memes: ArrayList<Meme> = ArrayList()
     var counter: Int = 1
     var elems: Int = 1
+    lateinit var settingsFragment: SettingsFragment
+    lateinit var mainFragment: MainFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +65,19 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("search_query", search_query)
             startActivity(intent)
         }
+
+        nav_view.setNavigationItemSelectedListener(this)
+
         val mainFragment: MainFragment
         mainFragment = MainFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_viewer, mainFragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         mainFragment.width = width
+
+
     }
     fun parse(image: ImageView, url: String?) {
         runOnUiThread { Picasso.get().load(url).into(image) }
@@ -73,6 +90,29 @@ class MainActivity : AppCompatActivity() {
         val searchView = menu?.findItem(R.id.search)?.actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.setIconifiedByDefault(true)
+        return true
+    }
+
+    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+        when(menuItem.itemId){
+            R.id.nav_home -> {
+                mainFragment = MainFragment()
+                supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_viewer, mainFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit()
+            }
+            R.id.nav_settings -> {
+                settingsFragment = SettingsFragment()
+                supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_viewer, settingsFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit()
+            }
+        }
+        drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 }
