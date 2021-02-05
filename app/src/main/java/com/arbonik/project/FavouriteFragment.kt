@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vseved3.JSONHelper
+import java.lang.Exception
 
 class FavouriteFragment : Fragment() {
     var width: Int = 0
@@ -26,9 +27,11 @@ class FavouriteFragment : Fragment() {
                 }
             }
         })
-        memes = JSONHelper.importFromJSON(context) as ArrayList<Meme>
-        recyclerView?.adapter = RecAdapter(context, width / 2.2, width/ 2.2, memes as ArrayList<Meme>)
-
+        try {
+            memes = JSONHelper.importFromJSON(context) as ArrayList<Meme>
+            recyclerView?.adapter = RecAdapter(context, width / 2.2, width / 2.2, memes as ArrayList<Meme>)
+        } catch (e: Exception) {
+        }
         return view
     }
 

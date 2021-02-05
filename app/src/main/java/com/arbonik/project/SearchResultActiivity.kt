@@ -46,7 +46,7 @@ class SearchResultActiivity : AppCompatActivity() {
     fun load_data(elems: Int) {
         val apiService = MemeApiService.create()
         val context = this
-        val results = apiService.search_with_query(elems, 30, search_query, "popular", "all", "ru")
+        val results = apiService.search_with_query(elems, 30, search_query, "newest", "all", "ru")
         results.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
                 for (meme in response!!.body().memes) {

@@ -9,4 +9,7 @@
     <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/pepe_layer</item>
     </style>
+    <style name="custom_theme">
+        <item name="background">@color/purple_700</item>
+    </style>
 </resources>

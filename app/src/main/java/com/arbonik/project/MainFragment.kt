@@ -46,7 +46,7 @@ class MainFragment : Fragment() {
     }
     fun load_data(elems: Int) {
         val apiService = MemeApiService.create()
-        val results = apiService.search(elems, 30, "popular", "all", "ru")
+        val results = apiService.search(elems, 30, "newest", "all", "ru")
         val context = getContext() as Context
         results.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
