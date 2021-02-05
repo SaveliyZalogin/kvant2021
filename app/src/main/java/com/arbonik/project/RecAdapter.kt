@@ -9,14 +9,11 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
-import java.io.Serializable
 
-class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayList<Meme>) :
+class RecAdapter(context: Context?, width: Double, height: Double, urls: ArrayList<Meme>) :
     RecyclerView.Adapter<RecAdapter.MyViewHolder>() {
     var width = width
     var height = height
@@ -31,10 +28,10 @@ class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayLis
         val meme = urls.get(position)
         val url = meme.url
         Log.d("pos", position.toString())
-        holder.image_left?.layoutParams?.width = width.toInt()
-        holder.image_left?.layoutParams?.height = height.toInt()
+        holder.image1?.layoutParams?.width = width.toInt()
+        holder.image1?.layoutParams?.height = height.toInt()
         holder.image1?.let { MainActivity().parse(it, url) }
-        holder.card_left?.visibility = VISIBLE
+        holder.meme_text?.text = meme.title!!.split(",")[0]
         holder.itemView.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 val intent = Intent(context, MemeActivity::class.java)
@@ -42,19 +39,19 @@ class RecAdapter(context: Context, width: Double, height: Double, urls: ArrayLis
                 intent.putExtra("title", meme.title)
                 intent.putExtra("description", meme.description)
                 intent.putExtra("url", meme.url)
-                context.startActivity(intent)
+                context?.startActivity(intent)
             }
         })
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var image1: ImageView? = null
-        var image_left: LinearLayout? = null
         var card_left: CardView? = null
+        var meme_text: TextView? = null
         init {
             image1 = itemView.findViewById(R.id.image)
-            image_left = itemView.findViewById(R.id.image_left)
             card_left = itemView.findViewById(R.id.card_left)
+            meme_text = itemView.findViewById(R.id.meme_text)
         }
     }
 

@@ -14,16 +14,14 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -34,11 +32,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var search_query: String = ""
     var width: Int = 0
     var height: Int = 0
-    val memes: ArrayList<Meme> = ArrayList()
-    var counter: Int = 1
-    var elems: Int = 1
-    lateinit var settingsFragment: SettingsFragment
-    lateinit var mainFragment: MainFragment
+    val mainFragment = MainFragment()
+    val favouriteFragment = FavouriteFragment()
+    val settingsFragment = SettingsFragment()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +52,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
+        nav_view.setNavigationItemSelectedListener(this)
         toggle.syncState()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
+        mainFragment.width = width
+        nav_view.setCheckedItem(R.id.nav_home)
 
         if (Intent.ACTION_SEARCH == intent.action) {
             Toast.makeText(applicationContext, "asd", Toast.LENGTH_LONG).show()
@@ -65,19 +65,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.putExtra("search_query", search_query)
             startActivity(intent)
         }
-
-        nav_view.setNavigationItemSelectedListener(this)
-
-        val mainFragment: MainFragment
-        mainFragment = MainFragment()
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_viewer, mainFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        mainFragment.width = width
-
-
     }
     fun parse(image: ImageView, url: String?) {
         runOnUiThread { Picasso.get().load(url).into(image) }
@@ -93,18 +80,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        when(menuItem.itemId){
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.nav_home -> {
-                mainFragment = MainFragment()
-                supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_viewer, mainFragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
+                mainFragment.width = width
+                nav_view.setCheckedItem(R.id.nav_home)
+            }
+            R.id.nav_izbrannoe -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, favouriteFragment).commit()
+                favouriteFragment.width = width
+                nav_view.setCheckedItem(R.id.nav_izbrannoe)
             }
             R.id.nav_settings -> {
-                settingsFragment = SettingsFragment()
                 supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.fragment_viewer, settingsFragment)
@@ -139,7 +127,7 @@ interface MemeApiService {
                     .baseUrl("https://api.meme-arsenal.ru/")
                     .build()
 
-            return retrofit.create(MemeApiService::class.java);
+            return retrofit.create(MemeApiService::class.java)
         }
     }
 }

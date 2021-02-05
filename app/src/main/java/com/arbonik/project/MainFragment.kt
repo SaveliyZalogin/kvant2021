@@ -1,17 +1,15 @@
 package com.arbonik.project
 
 import android.content.Context
-import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_fragment.*
-import kotlinx.android.synthetic.main.main_fragment.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
