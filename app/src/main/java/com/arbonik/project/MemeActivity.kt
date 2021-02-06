@@ -3,6 +3,7 @@ package com.arbonik.project
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,8 +11,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.vseved3.JSONHelper
@@ -22,21 +22,36 @@ import kotlinx.android.synthetic.main.activity_meme.*
 class MemeActivity : AppCompatActivity() {
     var memes: ArrayList<Meme> = ArrayList()
     var meme: Meme? = null
+    var width: Int = 0
+    var height: Int = 0
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meme)
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        width = size.x
+        height = size.y
 
+        this.window.statusBarColor = resources.getColor(android.R.color.black)
         setSupportActionBar(toolbar)
+
         val id: Int = intent.getIntExtra("id", 0)
         val title: String? = intent.getStringExtra("title")
         val description: String? = intent.getStringExtra("description")
         val url: String? = intent.getStringExtra("url")
+
         meme = Meme(id, title, description, url)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = "MEME"
+
         MainActivity().parse(meme_image, meme?.url)
+        val k = meme_image.layoutParams.width / meme_image.layoutParams.height
+        meme_image.layoutParams.width = (width / 1.1).toInt()
+        meme_image.layoutParams.height = meme_image.layoutParams.width / k
         meme_title.text = meme?.title
+
         try {
             val favourite_list = JSONHelper.importFromJSON(this)
             if (favourite_list?.contains(meme)!!) {
@@ -52,6 +67,7 @@ class MemeActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.stackTrace
         }
+
         save_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 meme_image.setDrawingCacheEnabled(true)
@@ -61,6 +77,7 @@ class MemeActivity : AppCompatActivity() {
                 }
             }
         })
+
         izbrannoe_button.setOnClickListener(object : View.OnClickListener {
             var isClicked = false
             override fun onClick(v: View?) {
@@ -68,7 +85,7 @@ class MemeActivity : AppCompatActivity() {
                     val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_24)
                     drawable?.setBounds(0, 0, 50, 50)
                     izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
-                    izbrannoe_button.text = "В избранном"
+                    izbrannoe_button.text = "В Избранном"
                     try {
                         val asd = JSONHelper.importFromJSON(applicationContext)
                         for (memem in asd!!) {

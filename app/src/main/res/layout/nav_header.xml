@@ -15,6 +15,5 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="30sp"
-        android:textColor="@color/black"
         android:text="MEME FINDER"/>
 </LinearLayout>

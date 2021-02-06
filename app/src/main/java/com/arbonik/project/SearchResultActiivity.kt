@@ -1,9 +1,9 @@
 package com.arbonik.project
 
 import android.graphics.Point
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_search_result.*
@@ -23,6 +23,7 @@ class SearchResultActiivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        this.window.statusBarColor = resources.getColor(android.R.color.black)
 
         val display = windowManager.defaultDisplay
         val size = Point()

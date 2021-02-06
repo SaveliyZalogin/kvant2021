@@ -1,8 +1,10 @@
 package com.arbonik.project
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
@@ -13,11 +15,14 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.core.view.GravityCompat
+import androidx.preference.PreferenceManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,22 +31,37 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.lang.Exception
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     var search_query: String = ""
     var width: Int = 0
     var height: Int = 0
     val mainFragment = MainFragment()
     val favouriteFragment = FavouriteFragment()
-    val settingsFragment = SettingsFragment()
-
-
+    var prefs: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        try {
+            prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
+                setTheme(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_YES) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+        } catch (e: Exception) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setSupportActionBar(toolbar)
+        this.window.statusBarColor = resources.getColor(android.R.color.black)
 
         val display = windowManager.defaultDisplay
         val size = Point()
@@ -49,14 +69,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         width = size.x
         height = size.y
 
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        nav_view.setNavigationItemSelectedListener(this)
-        toggle.syncState()
+        nav_view.setOnNavigationItemSelectedListener(this)
         supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
         mainFragment.width = width
-        nav_view.setCheckedItem(R.id.nav_home)
 
         if (Intent.ACTION_SEARCH == intent.action) {
             Toast.makeText(applicationContext, "asd", Toast.LENGTH_LONG).show()
@@ -85,23 +100,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
                 mainFragment.width = width
-                nav_view.setCheckedItem(R.id.nav_home)
             }
             R.id.nav_izbrannoe -> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, favouriteFragment).commit()
                 favouriteFragment.width = width
-                nav_view.setCheckedItem(R.id.nav_izbrannoe)
-            }
-            R.id.nav_settings -> {
-                supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_viewer, settingsFragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
             }
         }
-        drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.settings_toolbar -> {
+                intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 interface MemeApiService {
