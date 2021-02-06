@@ -67,4 +67,5 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
+
 }
