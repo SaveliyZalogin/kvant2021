@@ -2,6 +2,7 @@ package com.arbonik.project
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.drawable.Drawable
@@ -14,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.PreferenceManager
 import com.example.vseved3.JSONHelper
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_meme.*
@@ -21,9 +24,11 @@ import kotlinx.android.synthetic.main.activity_meme.*
 
 class MemeActivity : AppCompatActivity() {
     var memes: ArrayList<Meme> = ArrayList()
-    var meme: Meme? = null
+    lateinit var meme: Meme
     var width: Int = 0
     var height: Int = 0
+    var prefs: SharedPreferences? = null
+    lateinit var favourite_list: List<Meme?>
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +39,13 @@ class MemeActivity : AppCompatActivity() {
         width = size.x
         height = size.y
 
-        this.window.statusBarColor = resources.getColor(android.R.color.black)
+        try {
+            prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        } catch (e: java.lang.Exception) {
+        }
         setSupportActionBar(toolbar)
 
         val id: Int = intent.getIntExtra("id", 0)
@@ -46,26 +57,57 @@ class MemeActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = "MEME"
 
-        MainActivity().parse(meme_image, meme?.url)
+        MainActivity().parse(meme_image, meme.url)
         val k = meme_image.layoutParams.width / meme_image.layoutParams.height
         meme_image.layoutParams.width = (width / 1.1).toInt()
         meme_image.layoutParams.height = meme_image.layoutParams.width / k
-        meme_title.text = meme?.title
+        meme_title.text = meme.title
+
+        val click_listener_add_to_favourite = object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                try {
+                    if (!favourite_list.contains(meme)) {
+                        for (meme1 in favourite_list) {
+                            memes.add(meme1!!)
+                        }
+                        memes.add(meme)
+                        JSONHelper.exportToJSON(applicationContext, memes)
+                    }
+                } catch (e: Exception) {
+                    memes.add(meme)
+                    JSONHelper.exportToJSON(applicationContext, memes)
+                }
+                recreate()
+            }
+        }
+
+        val click_listener_remove_from_favourite = object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                for (meme1 in favourite_list) {
+                    memes.add(meme1!!)
+                }
+                memes.remove(meme)
+                JSONHelper.exportToJSON(applicationContext, memes)
+                recreate()
+            }
+        }
 
         try {
-            val favourite_list = JSONHelper.importFromJSON(this)
-            if (favourite_list?.contains(meme)!!) {
+            favourite_list = JSONHelper.importFromJSON(this)!!
+            if (favourite_list.contains(meme)) {
                 val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_24)
                 drawable?.setBounds(0, 0, 50, 50)
                 izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
                 izbrannoe_button.text = "В избранном"
+                izbrannoe_button.setOnClickListener(click_listener_remove_from_favourite)
             } else {
                 val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_outline_24)
                 drawable?.setBounds(0, 0, 50, 50)
                 izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
+                izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
             }
         } catch (e: Exception) {
-            e.stackTrace
+            izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
         }
 
         save_button.setOnClickListener(object : View.OnClickListener {
@@ -74,51 +116,6 @@ class MemeActivity : AppCompatActivity() {
                 val b: Bitmap = meme_image.getDrawingCache()
                 if (MediaStore.Images.Media.insertImage(contentResolver, b, "title", "desc") != null) {
                     Toast.makeText(applicationContext, "Сохранено", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
-        izbrannoe_button.setOnClickListener(object : View.OnClickListener {
-            var isClicked = false
-            override fun onClick(v: View?) {
-                if (!isClicked) {
-                    val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_24)
-                    drawable?.setBounds(0, 0, 50, 50)
-                    izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
-                    izbrannoe_button.text = "В Избранном"
-                    try {
-                        val asd = JSONHelper.importFromJSON(applicationContext)
-                        for (memem in asd!!) {
-                            memes.add(memem!!)
-                        }
-                        memes.add(meme!!)
-                        JSONHelper.exportToJSON(applicationContext, memes)
-                        isClicked = true
-                        Log.d("asd", "ff")
-                    } catch (e: Exception) {
-                        Log.d("asd", "gg")
-                        memes.add(meme!!)
-                        JSONHelper.exportToJSON(applicationContext, memes)
-                        isClicked = true
-                    }
-                } else {
-                    memes.clear()
-                    val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_outline_24)
-                    drawable?.setBounds(0, 0, 50, 50)
-                    izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
-                    try {
-                        val asd = JSONHelper.importFromJSON(applicationContext)
-                        for (memem in asd!!) {
-                            if (memem != meme) {
-                                memes.add(memem!!)
-                            }
-                        }
-                        JSONHelper.exportToJSON(applicationContext, memes)
-                        isClicked = false
-                        Log.d("asd", "ff")
-                    } catch (e: Exception) {
-                        Log.d("asd", "gg")
-                    }
                 }
             }
         })
@@ -141,7 +138,7 @@ class MemeActivity : AppCompatActivity() {
                 val shareIntent = Intent()
                 shareIntent.action = Intent.ACTION_SEND
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "MEME FROM MEME FINDER")
-                shareIntent.putExtra(Intent.EXTRA_TEXT, meme?.url)
+                shareIntent.putExtra(Intent.EXTRA_TEXT, meme.url)
                 shareIntent.type = "text/plain"
                 startActivity(shareIntent)
             }

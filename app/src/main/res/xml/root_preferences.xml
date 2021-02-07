@@ -7,7 +7,7 @@
             android:icon="@drawable/ic_baseline_burst_mode_24"
             android:key="app_theme"
             android:title="Тема приложения"
-            android:defaultValue="2"
+            android:defaultValue="1"
             android:entries="@array/app_theme"
             android:entryValues="@array/app_theme"
             android:dialogTitle="Выберите стиль для шрифта" />

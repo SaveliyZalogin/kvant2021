@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
@@ -14,17 +15,24 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     val settingsFragment = SettingsFragment()
+    var prefs: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
 
-        this.window.statusBarColor = resources.getColor(android.R.color.black)
+        try {
+            prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        } catch (e: java.lang.Exception) {
+        }
 
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Настройки"
         val context: Context = applicationContext
-        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        prefs.registerOnSharedPreferenceChangeListener(this)
+        prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs?.registerOnSharedPreferenceChangeListener(this)
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -60,11 +68,6 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
             sharedPreferences.edit()?.putString("theme_summary", "Светлая")?.apply()
             sharedPreferences.edit()?.putInt("theme", AppCompatDelegate.MODE_NIGHT_NO)?.apply()
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-        else if (sharedPreferences?.getString("app_theme", "") == "Тема устройства") {
-            sharedPreferences.edit()?.putString("theme_summary", "Тема устройства")?.apply()
-            sharedPreferences.edit()?.putInt("theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)?.apply()
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
 

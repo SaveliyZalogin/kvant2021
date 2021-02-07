@@ -1,9 +1,13 @@
 package com.arbonik.project
 
+import android.content.SharedPreferences
 import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_search_result.*
@@ -17,13 +21,20 @@ class SearchResultActiivity : AppCompatActivity() {
     var height: Int = 0
     val memes: ArrayList<Meme> = ArrayList()
     var elems: Int = 1
+    var prefs: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_result)
 
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        this.window.statusBarColor = resources.getColor(android.R.color.black)
+        try {
+            prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        } catch (e: java.lang.Exception) {
+        }
 
         val display = windowManager.defaultDisplay
         val size = Point()
@@ -47,7 +58,7 @@ class SearchResultActiivity : AppCompatActivity() {
     fun load_data(elems: Int) {
         val apiService = MemeApiService.create()
         val context = this
-        val results = apiService.search_with_query(elems, 30, search_query, "newest", "all", "ru")
+        val results = apiService.search_with_query(elems, 30, search_query, "popular", "all", "ru")
         results.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
                 for (meme in response!!.body().memes) {

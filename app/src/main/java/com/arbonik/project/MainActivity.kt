@@ -11,8 +11,10 @@ import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.ImageView
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -41,27 +43,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     val mainFragment = MainFragment()
     val favouriteFragment = FavouriteFragment()
     var prefs: SharedPreferences? = null
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
             prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
             if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
                 setTheme(AppCompatDelegate.MODE_NIGHT_NO)
+                window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_YES) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
-            else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         } catch (e: Exception) {
+            setTheme(AppCompatDelegate.MODE_NIGHT_NO)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        this.window.statusBarColor = resources.getColor(android.R.color.black)
 
         val display = windowManager.defaultDisplay
         val size = Point()
@@ -70,8 +71,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         height = size.y
 
         nav_view.setOnNavigationItemSelectedListener(this)
+        val mainFragment = MainFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
         mainFragment.width = width
+        mainFragment.toolbar = supportActionBar
 
         if (Intent.ACTION_SEARCH == intent.action) {
             Toast.makeText(applicationContext, "asd", Toast.LENGTH_LONG).show()
@@ -98,12 +101,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> {
+                val mainFragment = MainFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
                 mainFragment.width = width
+                supportActionBar?.show()
             }
             R.id.nav_izbrannoe -> {
+                val favouriteFragment = FavouriteFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, favouriteFragment).commit()
                 favouriteFragment.width = width
+                supportActionBar?.show()
             }
         }
         return true

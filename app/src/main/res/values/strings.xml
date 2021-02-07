@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MEME FINDER</string>
+    <string name="app_name">Meme Finder</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -23,7 +23,6 @@
     <string-array name="app_theme">
         <item>Тёмная</item>
         <item>Светлая</item>
-        <item>Тема устройства</item>
     </string-array>
     <string name="selected_theme">Тема устройства</string>
 </resources>

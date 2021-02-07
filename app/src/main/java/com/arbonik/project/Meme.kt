@@ -7,12 +7,12 @@ data class Data (
     val memes: List<Meme>
 )
 data class Meme (
-    @SerializedName("id")
+        @SerializedName("id")
     val id: Int? = null,
-    @SerializedName("title")
+        @SerializedName("title")
     val title: String? = null,
-    @SerializedName("description")
+        @SerializedName("description")
     val description: String? = null,
-    @SerializedName("url")
+        @SerializedName("url")
     val url: String? = null,
 )

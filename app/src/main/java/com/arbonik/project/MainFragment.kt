@@ -1,5 +1,6 @@
 package com.arbonik.project
 
+import androidx.appcompat.app.ActionBar
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +8,11 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vseved3.JSONHelper
 import kotlinx.android.synthetic.main.main_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,6 +26,9 @@ class MainFragment : Fragment() {
     var counter: Int = 1
     var elems: Int = 1
     var recyclerView: RecyclerView? = null
+    var toolbar: ActionBar? = null
+    val mergeAdapter = MergeAdapter()
+    var recAdapter: RecAdapter? = null
     override fun onCreateView (
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,23 +47,34 @@ class MainFragment : Fragment() {
 
         return view
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         load_data(elems)
     }
     fun load_data(elems: Int) {
         val apiService = MemeApiService.create()
-        val results = apiService.search(elems, 30, "newest", "all", "ru")
+        val results = apiService.search(elems, 30, "popular", "all", "ru")
         val context = getContext() as Context
         results.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>?, response: Response<Data>?) {
-                for (meme in response!!.body().memes) {
-                    memes.add(meme)
+                try {
+                    for (meme in response!!.body().memes) {
+                        memes.add(meme)
+                    }
+                } catch (e: Exception) {
+                    for (meme in response!!.body().memes) {
+                        memes.add(meme)
+                    }
                 }
+
                 if (recyclerView?.adapter != null) {
-                    recyclerView?.adapter!!.notifyDataSetChanged()
+                    recAdapter!!.notifyDataSetChanged()
                 } else {
-                    recyclerView?.adapter = RecAdapter(context, width / 2.2, width / 2.2, memes)
+                    mergeAdapter.addAdapter(TopAdapter())
+                    recAdapter = RecAdapter(context, width / 2.2, width / 2.2, memes)
+                    mergeAdapter.addAdapter(recAdapter!!)
+                    recyclerView?.adapter = mergeAdapter
                 }
             }
             override fun onFailure(call: Call<Data>?, t: Throwable?) {
