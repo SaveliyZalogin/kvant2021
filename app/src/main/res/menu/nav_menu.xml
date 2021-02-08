@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_nav_main"
+        android:icon="@drawable/home"
         android:title="Главная" />
     <item
         android:id="@+id/nav_izbrannoe"
-        android:icon="@drawable/ic_nav_izbrannoe"
+        android:icon="@drawable/izbrannoe"
         android:title="Избранное"/>
 </menu>
