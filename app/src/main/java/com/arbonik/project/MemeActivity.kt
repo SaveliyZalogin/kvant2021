@@ -8,11 +8,13 @@ import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -29,7 +31,7 @@ class MemeActivity : AppCompatActivity() {
     var height: Int = 0
     var prefs: SharedPreferences? = null
     lateinit var favourite_list: List<Meme?>
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint("UseCompatLoadingForDrawables", "ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meme)
@@ -72,12 +74,24 @@ class MemeActivity : AppCompatActivity() {
                         }
                         memes.add(meme)
                         JSONHelper.exportToJSON(applicationContext, memes)
+                        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.izbrannoe_anim)
+                        animation.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(animation: Animation?) {
+                                back_layer.visibility = VISIBLE
+                            }
+                            override fun onAnimationRepeat(animation: Animation?) {
+                            }
+                            override fun onAnimationEnd(animation: Animation?) {
+                                back_layer.visibility = GONE
+                                recreate()
+                            }
+                        })
+                        back_layer.startAnimation(animation)
                     }
                 } catch (e: Exception) {
                     memes.add(meme)
                     JSONHelper.exportToJSON(applicationContext, memes)
                 }
-                recreate()
             }
         }
 
@@ -88,7 +102,24 @@ class MemeActivity : AppCompatActivity() {
                 }
                 memes.remove(meme)
                 JSONHelper.exportToJSON(applicationContext, memes)
-                recreate()
+                val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.izbrannoe_anim2)
+                animation.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {
+                        val color = resources.getColor(R.color.white)
+                        getWindow().setStatusBarColor(color)
+                        meme_back_main.setBackgroundColor(color)
+                        back_layer.visibility = VISIBLE
+                    }
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+                    override fun onAnimationEnd(animation: Animation?) {
+                        val color = resources.getColor(R.color.white)
+                        getWindow().setStatusBarColor(color)
+                        back_layer.visibility = GONE
+                        recreate()
+                    }
+                })
+                back_layer.startAnimation(animation)
             }
         }
 
@@ -99,6 +130,9 @@ class MemeActivity : AppCompatActivity() {
                 drawable?.setBounds(0, 0, 50, 50)
                 izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
                 izbrannoe_button.text = "В избранном"
+                val color = resources.getColor(R.color.izbrannoe)
+                getWindow().setStatusBarColor(color)
+                meme_back_main.setBackgroundColor(color)
                 izbrannoe_button.setOnClickListener(click_listener_remove_from_favourite)
             } else {
                 val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_outline_24)

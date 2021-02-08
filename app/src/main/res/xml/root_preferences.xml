@@ -4,7 +4,7 @@
     <PreferenceCategory app:title="Тема приложения">
 
         <ListPreference
-            android:icon="@drawable/ic_baseline_burst_mode_24"
+            android:icon="@drawable/theme_preferences"
             android:key="app_theme"
             android:title="Тема приложения"
             android:defaultValue="1"

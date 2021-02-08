@@ -5,6 +5,9 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
                 setTheme(AppCompatDelegate.MODE_NIGHT_NO)
                 window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                window.navigationBarColor = android.R.color.transparent
             }
             else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_YES) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
