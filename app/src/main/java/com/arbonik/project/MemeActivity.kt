@@ -77,6 +77,7 @@ class MemeActivity : AppCompatActivity() {
                         val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.izbrannoe_anim)
                         animation.setAnimationListener(object : Animation.AnimationListener {
                             override fun onAnimationStart(animation: Animation?) {
+                                back_layer.layoutParams.width = height
                                 back_layer.visibility = VISIBLE
                             }
                             override fun onAnimationRepeat(animation: Animation?) {
@@ -108,6 +109,7 @@ class MemeActivity : AppCompatActivity() {
                         val color = resources.getColor(R.color.white)
                         getWindow().setStatusBarColor(color)
                         meme_back_main.setBackgroundColor(color)
+                        back_layer.layoutParams.width = height
                         back_layer.visibility = VISIBLE
                     }
                     override fun onAnimationRepeat(animation: Animation?) {
@@ -126,18 +128,12 @@ class MemeActivity : AppCompatActivity() {
         try {
             favourite_list = JSONHelper.importFromJSON(this)!!
             if (favourite_list.contains(meme)) {
-                val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_24)
-                drawable?.setBounds(0, 0, 50, 50)
-                izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
                 izbrannoe_button.text = "В избранном"
                 val color = resources.getColor(R.color.izbrannoe)
                 getWindow().setStatusBarColor(color)
                 meme_back_main.setBackgroundColor(color)
                 izbrannoe_button.setOnClickListener(click_listener_remove_from_favourite)
             } else {
-                val drawable: Drawable? = resources.getDrawable(R.drawable.ic_baseline_star_outline_24)
-                drawable?.setBounds(0, 0, 50, 50)
-                izbrannoe_button.setCompoundDrawables(drawable, null, null, null)
                 izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
             }
         } catch (e: Exception) {

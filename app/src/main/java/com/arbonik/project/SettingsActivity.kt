@@ -29,6 +29,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
         }
 
         setSupportActionBar(toolbar)
+        supportActionBar!!.setLogo(null)
         supportActionBar?.title = "Настройки"
         val context: Context = applicationContext
         prefs = PreferenceManager.getDefaultSharedPreferences(context)

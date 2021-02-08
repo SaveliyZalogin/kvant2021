@@ -14,7 +14,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+import android.view.View.*
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -53,13 +53,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
                 setTheme(AppCompatDelegate.MODE_NIGHT_NO)
                 window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                window.navigationBarColor = android.R.color.transparent
             }
             else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_YES) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         } catch (e: Exception) {
+            window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             setTheme(AppCompatDelegate.MODE_NIGHT_NO)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         }

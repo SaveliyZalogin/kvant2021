@@ -78,7 +78,7 @@
                 android:background="@android:color/transparent"
                 android:text="В Избранное"
                 android:padding="10dp"
-                android:drawableLeft="@drawable/ic_baseline_star_outline_24" />
+                android:drawableLeft="@drawable/izbrannoe" />
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
