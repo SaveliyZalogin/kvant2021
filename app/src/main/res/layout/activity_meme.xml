@@ -8,13 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".MemeActivity"
     android:orientation="vertical">
-    <ImageView
-        android:id="@+id/back_layer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:src="@drawable/izbr_back"
-        android:background="@android:color/transparent"/>
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         app:title="MEME FINDER"
@@ -67,10 +60,18 @@
                 android:text="СОХРАНИТЬ"/>
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
+            android:id="@+id/izbrannoe_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="10dp"
             android:layout_margin="2dp">
+            <ImageView
+                android:id="@+id/back_layer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:src="@drawable/izbr_back"
+                android:background="@android:color/transparent"/>
             <Button
                 android:id="@+id/izbrannoe_button"
                 android:layout_width="match_parent"

@@ -5,6 +5,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -114,6 +115,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 val favouriteFragment = FavouriteFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, favouriteFragment).commit()
                 favouriteFragment.width = width
+                favouriteFragment.mFragmentManager = supportFragmentManager
                 supportActionBar?.show()
             }
         }

@@ -20,7 +20,6 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 app:title="MEME FINDER"
-                app:logo="@drawable/pepe2_layer2"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:orientation="horizontal"
@@ -38,7 +37,10 @@
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.MaterialComponents.DayNight"
+        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
+        app:itemIconTint="@drawable/tab_color"
+        app:itemTextColor="@drawable/tab_color"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

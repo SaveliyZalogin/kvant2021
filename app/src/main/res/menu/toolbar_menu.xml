@@ -10,6 +10,6 @@
         android:id="@+id/settings_toolbar"
         android:title="settings"
         app:showAsAction="always"
-        android:icon="@drawable/toolbar_settings"/>
+        android:icon="@drawable/ic_baseline_settings_24"/>
 
 </menu>

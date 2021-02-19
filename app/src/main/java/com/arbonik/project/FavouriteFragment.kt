@@ -3,10 +3,14 @@ package com.arbonik.project
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vseved3.JSONHelper
@@ -18,6 +22,7 @@ class FavouriteFragment : Fragment() {
     var memes: List<Meme>? = null
     val mergeAdapter = MergeAdapter()
     var recAdapter: RecAdapter? = null
+    var mFragmentManager: FragmentManager? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,28 +37,31 @@ class FavouriteFragment : Fragment() {
                 }
             }
         })
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         try {
-            if (recyclerView?.adapter == null) {
-                memes = JSONHelper.importFromJSON(context) as ArrayList<Meme>
-                mergeAdapter.addAdapter(TopAdapter())
-                recAdapter = RecAdapter(
-                    context,
-                    width / 2.2,
-                    width / 2.2,
-                    memes as ArrayList<Meme>
-                )
-                mergeAdapter.addAdapter(recAdapter!!)
-                recyclerView?.adapter = mergeAdapter
+            memes = JSONHelper.importFromJSON(context) as ArrayList<Meme>
+            if (memes?.size!! > 0) {
+                if (recyclerView?.adapter == null) {
+                    mergeAdapter.addAdapter(TopAdapter())
+                    recAdapter = RecAdapter(
+                        context,
+                        width / 2.2,
+                        width / 2.2,
+                        memes as ArrayList<Meme>
+                    )
+                    mergeAdapter.addAdapter(recAdapter!!)
+                    recyclerView?.adapter = mergeAdapter
+                } else {
+                    Toast.makeText(context, "asd", Toast.LENGTH_LONG).show()
+                }
             } else {
-                Toast.makeText(context, "asd", Toast.LENGTH_LONG).show()
+                val nthFragment = NothingFragment()
+                mFragmentManager?.beginTransaction()?.replace(R.id.fragment_viewer, nthFragment)?.commit()
             }
         } catch (e: Exception) {
+            val nthFragment = NothingFragment()
+            mFragmentManager?.beginTransaction()?.replace(R.id.fragment_viewer, nthFragment)?.commit()
         }
+        return view
     }
 
 }
