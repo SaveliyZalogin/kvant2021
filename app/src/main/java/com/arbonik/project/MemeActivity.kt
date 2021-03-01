@@ -141,6 +141,13 @@ class MemeActivity : AppCompatActivity() {
                 }
             }
         })
+        editor_button.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                intent = Intent(applicationContext, EditorActivity::class.java)
+                intent.putExtra("image_src", meme.url)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
