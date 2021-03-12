@@ -16,7 +16,6 @@
         android:orientation="horizontal"
         android:layout_margin="10dp"
         android:gravity="center"
-        android:elevation="10dp"
         app:menu="@menu/toolbar_menu_meme"/>
 
     <ImageView

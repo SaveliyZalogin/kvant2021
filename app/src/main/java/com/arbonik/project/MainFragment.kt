@@ -71,7 +71,6 @@ class MainFragment : Fragment() {
                 if (recyclerView?.adapter != null) {
                     recAdapter!!.notifyDataSetChanged()
                 } else {
-                    mergeAdapter.addAdapter(TopAdapter())
                     recAdapter = RecAdapter(context, width / 2.2, width / 2.2, memes)
                     mergeAdapter.addAdapter(recAdapter!!)
                     recyclerView?.adapter = mergeAdapter

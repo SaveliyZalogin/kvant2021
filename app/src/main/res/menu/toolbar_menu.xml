@@ -7,6 +7,11 @@
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item
+        android:id="@+id/favourite_toolbar"
+        android:title="favourite"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_star_toolbar"/>
+    <item
         android:id="@+id/settings_toolbar"
         android:title="settings"
         app:showAsAction="always"

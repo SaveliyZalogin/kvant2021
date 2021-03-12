@@ -41,7 +41,6 @@ class FavouriteFragment : Fragment() {
             memes = JSONHelper.importFromJSON(context) as ArrayList<Meme>
             if (memes?.size!! > 0) {
                 if (recyclerView?.adapter == null) {
-                    mergeAdapter.addAdapter(TopAdapter())
                     recAdapter = RecAdapter(
                         context,
                         width / 2.2,

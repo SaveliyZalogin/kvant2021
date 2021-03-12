@@ -40,13 +40,14 @@ import retrofit2.http.Query
 import java.lang.Exception
 
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
     var search_query: String = ""
     var width: Int = 0
     var height: Int = 0
     val mainFragment = MainFragment()
     val favouriteFragment = FavouriteFragment()
     var prefs: SharedPreferences? = null
+    var is_on_favourite = false
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
@@ -54,15 +55,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
                 setTheme(AppCompatDelegate.MODE_NIGHT_NO)
                 window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                window.navigationBarColor = Color.TRANSPARENT
             }
             else if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_YES) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+                window.navigationBarColor = Color.TRANSPARENT
             }
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
         } catch (e: Exception) {
             window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            setTheme(AppCompatDelegate.MODE_NIGHT_NO)
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+            window.navigationBarColor = Color.TRANSPARENT
+            setTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
 
         super.onCreate(savedInstanceState)
@@ -75,7 +77,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         width = size.x
         height = size.y
 
-        nav_view.setOnNavigationItemSelectedListener(this)
         val mainFragment = MainFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
         mainFragment.width = width
@@ -103,29 +104,29 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return true
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_home -> {
-                val mainFragment = MainFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
-                mainFragment.width = width
-                supportActionBar?.show()
-            }
-            R.id.nav_izbrannoe -> {
-                val favouriteFragment = FavouriteFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, favouriteFragment).commit()
-                favouriteFragment.width = width
-                favouriteFragment.mFragmentManager = supportFragmentManager
-                supportActionBar?.show()
-            }
-        }
-        return true
-    }
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.settings_toolbar -> {
                 intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.favourite_toolbar -> {
+                if (!is_on_favourite) {
+                    val favouriteFragment = FavouriteFragment()
+                    supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, favouriteFragment).commit()
+                    favouriteFragment.width = width
+                    favouriteFragment.mFragmentManager = supportFragmentManager
+                    item.icon = getDrawable(R.drawable.ic_baseline_home_24)
+                    is_on_favourite = true
+                } else {
+                    val mainFragment = MainFragment()
+                    supportFragmentManager.beginTransaction().replace(R.id.fragment_viewer, mainFragment).commit()
+                    mainFragment.width = width
+                    mainFragment.toolbar = supportActionBar
+                    item.icon = getDrawable(R.drawable.ic_star_toolbar)
+                    is_on_favourite = false
+                }
             }
         }
         return super.onOptionsItemSelected(item)

@@ -82,6 +82,7 @@ class MemeActivity : AppCompatActivity() {
                             override fun onAnimationStart(animation: Animation?) {
                                 back_layer.layoutParams.width = height
                                 back_layer.visibility = VISIBLE
+                                izbrannoe_button.isClickable = false
                             }
                             override fun onAnimationRepeat(animation: Animation?) {
                             }
@@ -112,6 +113,7 @@ class MemeActivity : AppCompatActivity() {
                         izbrannoe_button.setBackgroundColor(android.R.color.transparent)
                         back_layer.layoutParams.width = height
                         back_layer.visibility = VISIBLE
+                        izbrannoe_button.isClickable = false
                     }
                     override fun onAnimationRepeat(animation: Animation?) {
                     }
@@ -123,13 +125,16 @@ class MemeActivity : AppCompatActivity() {
                 back_layer.startAnimation(animation)
             }
         }
-
-        if (favourite_list.contains(meme)) {
-            izbrannoe_button.text = "В избранном"
-            val color = resources.getColor(R.color.izbrannoe)
-            izbrannoe_button.setBackgroundColor(color)
-            izbrannoe_button.setOnClickListener(click_listener_remove_from_favourite)
-        } else {
+        try {
+            if (favourite_list.contains(meme)) {
+                izbrannoe_button.text = "В избранном"
+                val color = resources.getColor(R.color.izbrannoe)
+                izbrannoe_button.setBackgroundColor(color)
+                izbrannoe_button.setOnClickListener(click_listener_remove_from_favourite)
+            } else {
+                izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
+            }
+        } catch (e: Exception) {
             izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
         }
         save_button.setOnClickListener(object : View.OnClickListener {
