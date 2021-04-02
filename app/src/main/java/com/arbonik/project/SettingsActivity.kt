@@ -22,7 +22,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
 
         try {
             prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_NO) {
+            if (prefs?.getInt("theme", 0) == AppCompatDelegate.MODE_NIGHT_YES) {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         } catch (e: java.lang.Exception) {

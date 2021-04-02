@@ -17,8 +17,8 @@
             android:id="@+id/toolbar"
             app:title="MEME FINDER"
             android:layout_width="match_parent"
+            android:background="#FFA600"
             android:layout_height="?attr/actionBarSize"
-            android:layout_margin="10dp"
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
     <FrameLayout
@@ -28,3 +28,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+
