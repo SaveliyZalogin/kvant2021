@@ -15,6 +15,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -61,9 +62,18 @@ class MemeActivity : AppCompatActivity() {
 
         MainActivity().parse(meme_image, meme.url)
         val k = meme_image.layoutParams.width / meme_image.layoutParams.height
-        meme_image.layoutParams.width = (width / 1.1).toInt()
-        meme_image.layoutParams.height = meme_image.layoutParams.width / k
+        meme_image.layoutParams.width = size.x / 100 * 70
+        meme_image.layoutParams.height = (height / 2.8).toInt()
+        meme_image.scaleType = ImageView.ScaleType.FIT_XY
+
+        if (meme_image.layoutParams.height > meme_image.layoutParams.width){
+            meme_image.layoutParams.height = (height)
+        }
+
         meme_title.text = meme.title
+        try {
+            favourite_list = JSONHelper.importFromJSON(this)!!
+        } catch (e: Exception) {}
 
         val click_listener_add_to_favourite = object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -74,11 +84,12 @@ class MemeActivity : AppCompatActivity() {
                         }
                         memes.add(meme)
                         JSONHelper.exportToJSON(applicationContext, memes)
-                        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.flash1)
+                        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.izbrannoe_anim)
                         animation.setAnimationListener(object : Animation.AnimationListener {
                             override fun onAnimationStart(animation: Animation?) {
                                 back_layer.layoutParams.width = height
                                 back_layer.visibility = VISIBLE
+                                izbrannoe_button.isClickable = false
                             }
                             override fun onAnimationRepeat(animation: Animation?) {
                             }
@@ -103,20 +114,17 @@ class MemeActivity : AppCompatActivity() {
                 }
                 memes.remove(meme)
                 JSONHelper.exportToJSON(applicationContext, memes)
-                val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.flash2)
+                val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.izbrannoe_anim2)
                 animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation?) {
-                        val color = resources.getColor(R.color.white)
-                        getWindow().setStatusBarColor(color)
-                        meme_back_main.setBackgroundColor(color)
+                        izbrannoe_button.setBackgroundColor(android.R.color.transparent)
                         back_layer.layoutParams.width = height
                         back_layer.visibility = VISIBLE
+                        izbrannoe_button.isClickable = false
                     }
                     override fun onAnimationRepeat(animation: Animation?) {
                     }
                     override fun onAnimationEnd(animation: Animation?) {
-                        val color = resources.getColor(R.color.white)
-                        getWindow().setStatusBarColor(color)
                         back_layer.visibility = GONE
                         recreate()
                     }
@@ -124,14 +132,11 @@ class MemeActivity : AppCompatActivity() {
                 back_layer.startAnimation(animation)
             }
         }
-
         try {
-            favourite_list = JSONHelper.importFromJSON(this)!!
             if (favourite_list.contains(meme)) {
                 izbrannoe_button.text = "В избранном"
                 val color = resources.getColor(R.color.izbrannoe)
-                getWindow().setStatusBarColor(color)
-                meme_back_main.setBackgroundColor(color)
+                izbrannoe_button.setBackgroundColor(color)
                 izbrannoe_button.setOnClickListener(click_listener_remove_from_favourite)
             } else {
                 izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
@@ -139,7 +144,6 @@ class MemeActivity : AppCompatActivity() {
         } catch (e: Exception) {
             izbrannoe_button.setOnClickListener(click_listener_add_to_favourite)
         }
-
         save_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 meme_image.setDrawingCacheEnabled(true)
@@ -147,6 +151,13 @@ class MemeActivity : AppCompatActivity() {
                 if (MediaStore.Images.Media.insertImage(contentResolver, b, "title", "desc") != null) {
                     Toast.makeText(applicationContext, "Сохранено", Toast.LENGTH_LONG).show()
                 }
+            }
+        })
+        editor_button.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                intent = Intent(applicationContext, EditorActivity::class.java)
+                intent.putExtra("image_src", meme.url)
+                startActivity(intent)
             }
         })
     }

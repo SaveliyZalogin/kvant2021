@@ -1,12 +1,15 @@
 package com.example.vseved3
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.arbonik.project.Meme
 import com.google.gson.Gson
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import java.util.*
 
 internal object JSONHelper {
     private const val FILE_MEMES_NAME = "izbrannie-memes.json"
@@ -32,6 +35,7 @@ internal object JSONHelper {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun importFromJSON(context: Context?): List<Meme?>? {
         var streamReader: InputStreamReader? = null
         var fileInputStream: FileInputStream? = null
@@ -45,6 +49,7 @@ internal object JSONHelper {
             ex.printStackTrace()
         } finally {
             if (streamReader != null) {
+                val page = Optional.ofNullable(streamReader)
                 try {
                     streamReader.close()
                 } catch (e: IOException) {
@@ -59,7 +64,7 @@ internal object JSONHelper {
                 }
             }
         }
-        return null
+        return emptyList()
     }
     private class DataItems {
         private var memes: List<Meme>? = null
